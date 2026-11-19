@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'vn.leduynam.banphimai'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'vn.leduynam.banphimai'
+        minSdk 26
+        targetSdk 34
+        // số phiên bản tăng theo lần build trên GitHub để cài đè được
+        versionCode((System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger())
+        versionName "1.0." + (System.getenv('GITHUB_RUN_NUMBER') ?: '0')
+    }
+
+    signingConfigs {
+        // khóa cố định trong repo -> các bản sau cài đè lên bản trước, không phải gỡ app
+        fixed {
+            storeFile file('banphimai.keystore')
+            storePassword 'banphimai'
+            keyAlias 'banphimai'
+            keyPassword 'banphimai'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.fixed
+        }
+        debug {
+            signingConfig signingConfigs.fixed
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
